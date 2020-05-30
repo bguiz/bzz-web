@@ -1,0 +1,29 @@
+{
+  "name": "bzz-web",
+  "version": "0.0.0",
+  "description": "Proxies Swarm bzz:/ URLs at bzz-web:/ to cater to web browser specific routing customs and expectations",
+  "main": "bzz-web.js",
+  "bin": "./bzz-web-command.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bguiz/bzz-web.git"
+  },
+  "keywords": [
+    "http",
+    "swarm",
+    "bzz",
+    "proxy"
+  ],
+  "author": "bguiz",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/bguiz/bzz-web/issues"
+  },
+  "homepage": "https://github.com/bguiz/bzz-web#readme",
+  "dependencies": {
+    "axios": "0.19.2"
+  }
+}
