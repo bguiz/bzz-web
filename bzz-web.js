@@ -1,4 +1,3 @@
-const http = require('http');
 const url = require('url');
 
 // TODO remove this dependency,
@@ -6,44 +5,14 @@ const url = require('url');
 // Use `http` directly instead.
 const axios = require('axios');
 
-const BZZ_HOST =
-  process.env.BZZ_HOST || 'localhost';
-const BZZ_PORT =
-  process.env.BZZ_PORT || 8500;
-
-const pathRegex =
-  /^\/(bzz|bzz-raw|bzz-web)\:\/([\w\d]{64})(\/.*)?$/;
-
-const proxyAgent = new http.Agent({
-  keepAlive: true,
-  keepAliveMsecs: 60e3,
-  timeout: 10e3,
-});
-
-function errorResponseAsText(res, code, path, msg) {
-  res.writeHead(
-    code,
-    {
-      'Content-Type': 'text/plain',
-    },
-  );
-  res.write(
-    `${code} ${msg} - ${path}\n`,
-  );
-  res.end();
-  return;
-}
-
-function redirectResponse(res, redirectPath) {
-  res.writeHead(
-    307, // temporary redirect explicitly chosen over 301 permanent redirect
-    {
-      Location: redirectPath,
-    },
-  );
-  res.end();
-  return;
-}
+const {
+  BZZ_HOST,
+  BZZ_PORT,
+  pathRegex,
+  errorResponseAsText,
+  redirectResponse,
+  makeProxyRequest,
+} = require('./util.js');
 
 async function handleRequest(req, res) {
   reqUrl = url.parse(req.url);
@@ -101,29 +70,6 @@ async function handleRequest(req, res) {
     return redirectResponse(res, redirectPath);
   }
   return errorResponseAsText(res, 404, reqUrl.pathname, 'Not found');
-}
-
-function makeProxyRequest(res, path, headerOverrides = {}) {
-  return http.request({
-    agent: proxyAgent,
-    host: BZZ_HOST,
-    port: BZZ_PORT,
-    path,
-  }, function (proxyRes) {
-    const customHeaders = {
-      ...proxyRes.headers,
-      ...headerOverrides,
-    };
-    // console.log(proxyRes.headers);
-    // console.log(customHeaders);
-    res.writeHead(
-      proxyRes.statusCode,
-      customHeaders,
-    );
-    proxyRes.pipe(res, {
-      end: true,
-    });
-  });
 }
 
 async function convertPathToEntry(hash, subPath) {
