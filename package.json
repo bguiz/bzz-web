@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/bguiz/bzz-web#readme",
   "dependencies": {
-    "axios": "0.19.2"
+    "axios": "1.6.0"
   }
 }
